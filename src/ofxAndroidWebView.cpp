@@ -11,7 +11,10 @@ void ofxAndroidWebView::showWebView(string url)
 {
 
 	JNIEnv *env = ofGetJNIEnv();
-	jclass localClass = env->FindClass("cc/openframeworks/androidWebViewExample/OFActivity");
+
+	ofLog() << getClassName();
+	
+	jclass localClass = env->FindClass(getClassName().c_str());
 	javaClass = (jclass) env->NewGlobalRef(localClass);
 	if (!javaClass) {
 		ofLogError() << "javaClass not found!" << endl;
@@ -38,7 +41,8 @@ void ofxAndroidWebView::showWebView(string url)
  {
 
  	JNIEnv *env = ofGetJNIEnv();
-	jclass localClass = env->FindClass("cc/openframeworks/androidWebViewExample/OFActivity");
+
+	jclass localClass = env->FindClass(getClassName().c_str());
 	javaClass = (jclass) env->NewGlobalRef(localClass);
 	if (!javaClass) {
 		ofLogError() << "javaClass not found!" << endl;
@@ -57,3 +61,21 @@ void ofxAndroidWebView::showWebView(string url)
 	env->CallVoidMethod(javaObject,javaHideWebViewMethod);
  	
  };
+
+
+string ofxAndroidWebView::getClassName()
+{
+
+	JNIEnv *env = ofGetJNIEnv();
+
+	jobject activity = ofGetOFActivityObject();
+	jclass android_content_Context =  env->GetObjectClass(activity);
+	jmethodID midGetPackageName = env->GetMethodID(android_content_Context,"getPackageName", "()Ljava/lang/String;");
+	jstring packageName= (jstring)env->CallObjectMethod(activity, midGetPackageName);
+	jboolean isCopy;
+	string className = env->GetStringUTFChars(packageName,&isCopy);
+	ofStringReplace(className,".","/");
+	className = className + "/OFActivity";
+	return className;
+
+};

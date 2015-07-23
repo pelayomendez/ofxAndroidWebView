@@ -20,6 +20,8 @@ class ofxAndroidWebView {
 
  	private:
 
+ 		string getClassName();
+
  		jclass javaClass;
 		jobject javaObject;
 
