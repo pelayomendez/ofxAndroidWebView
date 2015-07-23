@@ -14,7 +14,20 @@ import cc.openframeworks.OFAndroid;
 
 public class OFActivity extends cc.openframeworks.OFActivity{
 	
-  	WebView wb;
+	@Override
+    public void onCreate(Bundle savedInstanceState)
+    { 
+        super.onCreate(savedInstanceState);
+        String packageName = getPackageName();
+ 
+        ofApp = new OFAndroid(packageName,this);
+    }
+	
+	///////////////////////////////////////////////////////////////
+	// ofxAndroidWebView methods - START
+	///////////////////////////////////////////////////////////////
+	
+	WebView wb;
     private class HelloWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -22,24 +35,11 @@ public class OFActivity extends cc.openframeworks.OFActivity{
         }
     }
 	
-	private static OFActivity instance;
-
-	@Override
-    public void onCreate(Bundle savedInstanceState)
-    { 
-        super.onCreate(savedInstanceState);
-        String packageName = getPackageName();
-        
-       instance = this;
-
-        ofApp = new OFAndroid(packageName,this);
-    }
-	
 	public void showWebView(final String url) {
 		
 		Log.i("OF", "Loading url: " + url);
 		
-		instance.runOnUiThread(new Runnable() {
+		this.runOnUiThread(new Runnable() {
 			public void run() {
 				wb=(WebView)findViewById(R.id.webView1);        
 		        //wb.getSettings().setJavaScriptEnabled(true);
@@ -57,7 +57,7 @@ public class OFActivity extends cc.openframeworks.OFActivity{
 	
 	public void hideWebView() {
 		
-		instance.runOnUiThread(new Runnable() {
+		this.runOnUiThread(new Runnable() {
 			public void run() {
 				wb=(WebView)findViewById(R.id.webView1);
 				wb.setVisibility(View.GONE);
@@ -70,6 +70,10 @@ public class OFActivity extends cc.openframeworks.OFActivity{
 	public void onBackPressed() {
 		hideWebView();
 	}
+	
+	///////////////////////////////////////////////////////////////
+	// ofxAndroidWebView methods - END
+	///////////////////////////////////////////////////////////////
 	
 	@Override
 	public void onDetachedFromWindow() {
